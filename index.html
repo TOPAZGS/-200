@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Market Analyzer — Price, Institution, Foreign</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div>
+      <h1 id="uiTitle">Market Analyzer</h1>
+      <p class="sub" id="uiSubtitle"></p>
+    </div>
+  </header>
+
+  <section class="panel upload-panel">
+    <h2 id="uiUploadHeading">Load data</h2>
+    <p class="hint" id="uiUploadHint"></p>
+    <div class="upload-row">
+      <label class="file-btn">
+        <span id="uiLblPrice">Price &amp; volume (.xlsx)</span>
+        <input type="file" id="filePrice" accept=".xlsx,.xls" />
+      </label>
+      <label class="file-btn">
+        <span id="uiLblInst">Institution (.xlsx)</span>
+        <input type="file" id="fileInst" accept=".xlsx,.xls" />
+      </label>
+      <label class="file-btn">
+        <span id="uiLblFor">Foreign (.xlsx)</span>
+        <input type="file" id="fileForeign" accept=".xlsx,.xls" />
+      </label>
+    </div>
+    <div id="dropZone" class="drop-zone"></div>
+    <p id="loadStatus" class="status"></p>
+  </section>
+
+  <nav class="tabs" id="mainTabs">
+    <button type="button" class="tab active" data-tab="rank" id="tabBtnRank"></button>
+    <button type="button" class="tab" data-tab="detail" id="tabBtnDetail"></button>
+    <button type="button" class="tab" data-tab="alerts" id="tabBtnAlerts"></button>
+    <button type="button" class="tab" data-tab="report" id="tabBtnReport"></button>
+  </nav>
+
+  <main>
+    <section id="tab-rank" class="tab-panel active">
+      <div class="panel controls">
+        <label><span id="lblAnchor"></span><select id="anchorDate"></select></label>
+        <label><span id="lblMarket"></span>
+          <select id="filterMarket">
+            <option value="" id="optMarketAll"></option>
+            <option value="KOSPI">KOSPI</option>
+            <option value="KOSDAQ">KOSDAQ</option>
+          </select>
+        </label>
+        <label><span id="lblHorizon"></span>
+          <select id="horizon">
+            <option value="1d" id="optH1d"></option>
+            <option value="1w" id="optH1w"></option>
+            <option value="1m" id="optH1m"></option>
+          </select>
+        </label>
+        <label><span id="lblTopN"></span>
+          <input type="number" id="topN" value="30" min="5" max="200" />
+        </label>
+        <button type="button" id="btnRank"></button>
+      </div>
+      <div class="panel">
+        <h3 id="h3Up"></h3>
+        <div class="table-wrap"><table id="tblUp"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="panel">
+        <h3 id="h3Down"></h3>
+        <div class="table-wrap"><table id="tblDown"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="panel">
+        <h3 id="h3Broker"></h3>
+        <p class="hint" id="hintBroker"></p>
+        <div class="table-wrap"><table id="tblBroker"><thead></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="tab-detail" class="tab-panel">
+      <div class="panel controls">
+        <label><span id="lblSearch"></span>
+          <input type="search" id="stockSearch" list="stockList" autocomplete="off" />
+          <datalist id="stockList"></datalist>
+        </label>
+        <button type="button" id="btnLoadStock"></button>
+      </div>
+      <div class="panel chart-panel">
+        <canvas id="chartPrice" height="120"></canvas>
+      </div>
+      <div class="panel chart-panel">
+        <canvas id="chartFlow" height="120"></canvas>
+      </div>
+      <div class="panel">
+        <h3 id="h3Series"></h3>
+        <div class="table-wrap"><table id="tblSeries"><thead></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="tab-alerts" class="tab-panel">
+      <div class="panel controls">
+        <label><span id="lblAlertDate"></span><select id="alertDate"></select></label>
+        <label><span id="lblAlertPct"></span>
+          <input type="number" id="alertPct" value="5" step="0.5" />
+        </label>
+        <label><span id="lblAlertVol"></span>
+          <input type="number" id="alertVolMult" value="2" step="0.1" />
+        </label>
+        <label class="chk"><input type="checkbox" id="alertInst" checked /> <span id="lblChkInst"></span></label>
+        <label class="chk"><input type="checkbox" id="alertForeign" checked /> <span id="lblChkFor"></span></label>
+        <button type="button" id="btnScan"></button>
+      </div>
+      <div class="panel">
+        <div class="table-wrap"><table id="tblAlerts"><thead></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="tab-report" class="tab-panel">
+      <div class="panel controls">
+        <label><span id="lblRepStart"></span><select id="repStart"></select></label>
+        <label><span id="lblRepEnd"></span><select id="repEnd"></select></label>
+        <button type="button" id="btnReport"></button>
+        <button type="button" id="btnCopy"></button>
+      </div>
+      <div class="panel">
+        <pre id="reportOut" class="report-out"></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p id="uiFooter"></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
